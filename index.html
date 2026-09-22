@@ -1,0 +1,1208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CareerOS — Your Personal IT Career Operating System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+:root{
+  --void:#05070c; --navy:#0a0e17; --panel:#0e1420;
+  --electric:#4da3ff; --electric2:#7fd0ff; --violet:#8b7bff; --mist:#c7d0de;
+  --border: rgba(255,255,255,0.09);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--void); color:#fff;
+  font-family:'Inter',sans-serif;
+  background-image:
+    radial-gradient(circle at 18% 8%, rgba(77,163,255,0.07), transparent 42%),
+    radial-gradient(circle at 82% 72%, rgba(139,123,255,0.06), transparent 42%);
+  overflow-x:hidden;
+}
+h1,h2,h3,.display{font-family:'Space Grotesk',sans-serif;}
+::selection{background:rgba(77,163,255,.35);}
+::-webkit-scrollbar{width:8px;}
+::-webkit-scrollbar-thumb{background:rgba(77,163,255,.3);border-radius:4px;}
+a,button{font-family:inherit;}
+button{cursor:pointer;}
+:focus-visible{outline:2px solid var(--electric);outline-offset:3px;border-radius:4px;}
+
+.glass{background:rgba(255,255,255,.035);border:1px solid var(--border);backdrop-filter:blur(16px);}
+.grid-overlay{
+  position:absolute; inset:0; pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
+  background-size:46px 46px;
+  -webkit-mask-image:radial-gradient(ellipse at center, black 0%, transparent 72%);
+  mask-image:radial-gradient(ellipse at center, black 0%, transparent 72%);
+}
+.text-gradient{background:linear-gradient(90deg,#fff 0%,#c7d0de 55%,#7fd0ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+.btn-primary{
+  background:linear-gradient(90deg,var(--electric),var(--violet));
+  color:#03050a; font-weight:700; border:none; border-radius:999px;
+  padding:16px 30px; font-size:14px; letter-spacing:.04em; text-transform:uppercase;
+  box-shadow:0 0 30px rgba(77,163,255,.25);
+  transition:transform .25s ease, box-shadow .25s ease;
+  display:inline-flex; align-items:center; gap:10px;
+}
+.btn-primary:hover{transform:translateY(-2px) scale(1.02); box-shadow:0 0 48px rgba(77,163,255,.4);}
+.btn-ghost{
+  background:rgba(255,255,255,.04); color:#fff; border:1px solid var(--border);
+  border-radius:999px; padding:14px 26px; font-size:13px; letter-spacing:.04em; text-transform:uppercase;
+  transition:all .2s ease;
+}
+.btn-ghost:hover{border-color:var(--electric); background:rgba(77,163,255,.08);}
+.fade-in{animation:fadeIn .7s ease both;}
+.fade-up{animation:fadeUp .7s cubic-bezier(.16,1,.3,1) both;}
+@keyframes fadeIn{from{opacity:0} to{opacity:1}}
+@keyframes fadeUp{from{opacity:0; transform:translateY(24px)} to{opacity:1; transform:translateY(0)}}
+@keyframes floatY{0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)}}
+@keyframes pulseSoft{0%,100%{opacity:.55} 50%{opacity:1}}
+@keyframes dash{to{stroke-dashoffset:0;}}
+@keyframes spin{to{transform:rotate(360deg);}}
+.float{animation:floatY 6s ease-in-out infinite;}
+.pulse{animation:pulseSoft 2.6s ease-in-out infinite;}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.001ms !important; transition-duration:.001ms !important;}
+}
+
+/* NAV */
+.navbar{
+  position:sticky; top:0; z-index:50; padding:14px 0;
+  background:rgba(5,7,12,.72); backdrop-filter:blur(14px); border-bottom:1px solid var(--border);
+}
+.navlist{display:flex; gap:4px; overflow-x:auto; scrollbar-width:none;}
+.navlist::-webkit-scrollbar{display:none;}
+.navbtn{
+  background:transparent; border:1px solid transparent; color:var(--mist);
+  padding:8px 14px; border-radius:999px; font-size:12.5px; letter-spacing:.03em; white-space:nowrap;
+  transition:all .2s ease;
+}
+.navbtn:hover{color:#fff;}
+.navbtn.active{background:rgba(77,163,255,.12); border-color:rgba(77,163,255,.4); color:#fff;}
+
+/* HERO */
+.hero{position:relative; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:80px 20px;}
+.hero h1{font-size:clamp(34px,6vw,72px); line-height:1.05; font-weight:700; margin:0 0 20px;}
+.hero p.sub{color:var(--mist); font-size:clamp(15px,2vw,19px); max-width:560px; margin:0 auto 40px;}
+.node{
+  position:absolute; padding:9px 16px; border-radius:999px; font-size:12.5px; font-weight:600;
+  background:rgba(14,20,32,.85); border:1px solid var(--border); color:var(--mist);
+  transition:all .3s ease; white-space:nowrap; pointer-events:auto;
+}
+.node:hover, .node.active{border-color:var(--electric); color:#fff; box-shadow:0 0 24px rgba(77,163,255,.35); transform:scale(1.08);}
+.node-svg{position:absolute; inset:0; width:100%; height:100%; pointer-events:none;}
+.node-line{stroke:var(--electric); stroke-width:1; opacity:.28; fill:none; transition:opacity .3s ease, stroke .3s ease;}
+.node-line.hot{opacity:.85; stroke:var(--electric2);}
+
+/* ONBOARDING */
+.progress-steps{display:flex; gap:10px; justify-content:center; margin-bottom:44px;}
+.progress-step{font-size:11px; letter-spacing:.08em; color:#4a5468; padding:6px 12px; border-radius:999px; border:1px solid var(--border);}
+.progress-step.active{color:var(--electric2); border-color:var(--electric); background:rgba(77,163,255,.08);}
+.progress-step.done{color:#7fd0ff; border-color:rgba(127,208,255,.4);}
+.option-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px; max-width:820px; margin:0 auto;}
+.option-card{
+  padding:22px 18px; border-radius:16px; text-align:left; font-size:15px; font-weight:600;
+  transition:all .25s cubic-bezier(.16,1,.3,1);
+}
+.option-card:hover{border-color:rgba(77,163,255,.45); transform:translateY(-3px);}
+.option-card.selected{border-color:var(--electric); background:rgba(77,163,255,.12); box-shadow:0 0 28px rgba(77,163,255,.22); transform:translateY(-3px) scale(1.02);}
+
+.chip{
+  display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:999px; font-size:13px;
+  border:1px solid var(--border); background:rgba(255,255,255,.03); color:var(--mist);
+  transition:all .2s ease; margin:5px;
+}
+.chip:hover{border-color:rgba(77,163,255,.4); color:#fff;}
+.chip.selected{background:linear-gradient(90deg, rgba(77,163,255,.22), rgba(139,123,255,.22)); border-color:var(--electric); color:#fff;}
+.skill-category-label{font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#5b6478; margin:26px 0 8px;}
+
+.exp-track{position:relative; max-width:640px; margin:0 auto; padding:30px 10px;}
+.exp-dot{width:14px; height:14px; border-radius:50%; background:var(--panel); border:2px solid var(--border); transition:all .25s ease; cursor:pointer;}
+.exp-dot.active{background:var(--electric); border-color:var(--electric); box-shadow:0 0 16px rgba(77,163,255,.6); transform:scale(1.3);}
+.exp-dot.passed{background:rgba(77,163,255,.35); border-color:rgba(77,163,255,.5);}
+
+/* RING */
+.ring-num{font-size:44px; font-weight:700; font-family:'Space Grotesk',sans-serif;}
+
+/* UNIVERSE */
+.universe-wrap{position:relative; width:100%; max-width:900px; margin:0 auto; aspect-ratio:1/1; max-height:640px;}
+.uni-node{
+  position:absolute; transform:translate(-50%,-50%); padding:12px 18px; border-radius:14px;
+  background:rgba(14,20,32,.9); border:1px solid var(--border); font-size:13.5px; font-weight:600; text-align:center;
+  transition:all .35s cubic-bezier(.16,1,.3,1); min-width:120px;
+}
+.uni-node:hover{border-color:var(--electric); box-shadow:0 0 26px rgba(77,163,255,.35); transform:translate(-50%,-50%) scale(1.06);}
+.uni-node.selected{border-color:var(--electric2); background:rgba(77,163,255,.18); box-shadow:0 0 40px rgba(77,163,255,.5); transform:translate(-50%,-50%) scale(1.1); z-index:5;}
+.uni-node.dim{opacity:.35; filter:blur(.3px);}
+.uni-center{
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  padding:20px 30px; border-radius:20px; text-align:center; z-index:2;
+  background:linear-gradient(160deg, rgba(77,163,255,.16), rgba(139,123,255,.12));
+  border:1px solid rgba(77,163,255,.5); box-shadow:0 0 50px rgba(77,163,255,.28);
+}
+
+/* CARDS */
+.card{border-radius:18px; padding:26px; transition:all .3s ease;}
+.badge{display:inline-block; padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:.05em; text-transform:uppercase; font-weight:700;}
+.badge-strong{background:rgba(77,163,255,.15); color:var(--electric2); border:1px solid rgba(77,163,255,.4);}
+.badge-good{background:rgba(139,123,255,.15); color:#b6acff; border:1px solid rgba(139,123,255,.4);}
+
+.bridge-node{
+  display:flex; align-items:center; gap:16px; padding:16px 20px; border-radius:14px; margin-bottom:6px;
+  transition:all .3s ease; cursor:pointer;
+}
+.bridge-dot{width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; border:2px solid var(--border); transition:all .3s ease;}
+.bridge-node.known .bridge-dot{background:rgba(77,163,255,.25); border-color:var(--electric); color:var(--electric2);}
+.bridge-node.next .bridge-dot{border-color:var(--violet); color:var(--violet); box-shadow:0 0 14px rgba(139,123,255,.4);}
+.bridge-line{width:2px; height:22px; background:rgba(255,255,255,.12); margin-left:33px;}
+
+/* ROADMAP */
+.roadmap-rail{position:relative; max-width:720px; margin:0 auto; padding-left:34px; border-left:2px solid rgba(255,255,255,.08);}
+.roadmap-phase{position:relative; padding:0 0 56px 24px; opacity:0; transform:translateX(-16px); transition:all .7s cubic-bezier(.16,1,.3,1);}
+.roadmap-phase.in-view{opacity:1; transform:translateX(0);}
+.roadmap-dot{position:absolute; left:-45px; top:2px; width:18px; height:18px; border-radius:50%; background:var(--panel); border:2px solid var(--border); transition:all .4s ease;}
+.roadmap-phase.in-view .roadmap-dot{background:var(--electric); border-color:var(--electric2); box-shadow:0 0 16px rgba(77,163,255,.6);}
+
+/* MISC */
+.skill-orbit-ring{fill:none; stroke:rgba(255,255,255,.08); stroke-width:1;}
+input[type=range]{-webkit-appearance:none; width:100%; height:4px; border-radius:2px; background:rgba(255,255,255,.12); outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:20px; height:20px; border-radius:50%; background:var(--electric); box-shadow:0 0 14px rgba(77,163,255,.6); cursor:pointer;}
+
+.coach-fab{
+  position:fixed; bottom:26px; right:26px; z-index:60;
+  background:linear-gradient(90deg,var(--electric),var(--violet)); color:#03050a; font-weight:700;
+  border:none; border-radius:999px; padding:15px 22px; box-shadow:0 8px 30px rgba(77,163,255,.4);
+  transition:transform .2s ease;
+}
+.coach-fab:hover{transform:scale(1.05);}
+.coach-panel{
+  position:fixed; bottom:90px; right:26px; z-index:60; width:380px; max-width:92vw; max-height:70vh;
+  overflow-y:auto; border-radius:20px; padding:22px;
+  background:rgba(10,14,23,.95); border:1px solid var(--border); backdrop-filter:blur(20px);
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+}
+@media (max-width:640px){
+  .universe-wrap{max-width:100%; aspect-ratio:auto; height:560px;}
+  .coach-panel{right:12px; left:12px; width:auto;}
+  .coach-fab{right:16px; bottom:16px;}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react,typescript">
+const { useState, useEffect, useRef, useMemo, useCallback } = React;
+
+/* =========================================================
+   DATA
+========================================================= */
+const ROLES = [
+  {id:'developer', label:'Software Developer'},
+  {id:'tester', label:'Test Engineer'},
+  {id:'sysadmin', label:'System Administrator'},
+  {id:'network', label:'Network Engineer'},
+  {id:'appsupport', label:'Application Support'},
+  {id:'techsupport', label:'Technical Support'},
+  {id:'devops', label:'DevOps Engineer'},
+  {id:'cloud', label:'Cloud Engineer'},
+  {id:'other', label:'Other'},
+];
+
+const EXP_STEPS = [0,1,2,3,5,7,10,15];
+
+const GOALS = [
+  {id:'growth', label:'Better Career Growth'},
+  {id:'switch', label:'Switch My Role'},
+  {id:'cloud', label:'Move Into Cloud'},
+  {id:'devops', label:'Move Into DevOps'},
+  {id:'ai', label:'Move Into AI'},
+  {id:'explore', label:'Explore New Technologies'},
+  {id:'unsure', label:"I'm Not Sure Yet"},
+];
+
+const SKILL_GROUPS = [
+  {label:'Development', skills:[
+    {id:'javascript', name:'JavaScript'}, {id:'typescript', name:'TypeScript'},
+    {id:'react', name:'React'}, {id:'java', name:'Java'},
+    {id:'python', name:'Python'}, {id:'dotnet', name:'.NET'},
+  ]},
+  {label:'Cloud', skills:[
+    {id:'aws', name:'AWS'}, {id:'azure', name:'Azure'}, {id:'gcp', name:'GCP'},
+  ]},
+  {label:'Infrastructure', skills:[
+    {id:'linux', name:'Linux'}, {id:'networking', name:'Networking'},
+  ]},
+  {label:'DevOps', skills:[
+    {id:'git', name:'Git'}, {id:'docker', name:'Docker'}, {id:'jenkins', name:'Jenkins'}, {id:'cicd', name:'CI/CD'},
+  ]},
+  {label:'Automation', skills:[
+    {id:'kubernetes', name:'Kubernetes'}, {id:'terraform', name:'Terraform'},
+  ]},
+  {label:'AI', skills:[
+    {id:'genai', name:'Generative AI'}, {id:'promptengineering', name:'Prompt Engineering'},
+    {id:'rag', name:'RAG'}, {id:'aiagents', name:'AI Agents'},
+  ]},
+];
+const ALL_SKILLS = SKILL_GROUPS.flatMap(g => g.skills.map(s => ({...s, category:g.label})));
+const skillById = id => ALL_SKILLS.find(s => s.id === id);
+
+const CAREER_PATHS = [
+  { id:'devops', name:'DevOps Engineer', blurb:'Automate delivery pipelines and bridge development with operations.',
+    coreSkills:['git','linux','docker','cicd','kubernetes'], requiredSkills:['linux','docker','cicd','kubernetes','terraform'],
+    firstProject:'Containerize an existing app and wire up a CI/CD pipeline that auto-deploys on push.' },
+  { id:'cloudeng', name:'Cloud Engineer', blurb:'Design and operate scalable infrastructure on AWS/Azure/GCP.',
+    coreSkills:['aws','linux','networking','terraform'], requiredSkills:['linux','networking','terraform','azure','kubernetes'],
+    firstProject:'Provision a 3-tier architecture on AWS using Terraform, from scratch.' },
+  { id:'platform', name:'Platform Engineer', blurb:'Build internal developer platforms and golden-path tooling.',
+    coreSkills:['docker','kubernetes','terraform','cicd'], requiredSkills:['docker','cicd','kubernetes','terraform'],
+    firstProject:'Build a self-service internal deployment template for other developers.' },
+  { id:'sre', name:'SRE', blurb:'Own reliability, incident response, and system observability.',
+    coreSkills:['linux','kubernetes','networking','cicd'], requiredSkills:['linux','networking','docker','kubernetes','terraform'],
+    firstProject:'Set up monitoring and alerting for a small service and write a runbook.' },
+  { id:'aieng', name:'AI Engineer', blurb:'Build applications powered by LLMs, agents, and retrieval systems.',
+    coreSkills:['python','genai','rag','aiagents'], requiredSkills:['python','promptengineering','rag','aiagents'],
+    firstProject:'Build a RAG-powered assistant over a small internal document set.' },
+  { id:'solarch', name:'Solutions Architect', blurb:'Design end-to-end technical solutions across cloud and application layers.',
+    coreSkills:['aws','networking','java','terraform'], requiredSkills:['networking','aws','azure','terraform','kubernetes'],
+    firstProject:'Design (and diagram) a migration plan for a legacy app to the cloud.' },
+];
+
+const EXPLAIN = {
+  linux:'The operating backbone of most servers and cloud infrastructure — command line fluency unlocks everything else.',
+  docker:'Packages applications into portable containers so they run identically everywhere — the entry point to modern deployment.',
+  cicd:'Automates build, test, and deploy so code ships safely and continuously instead of manually.',
+  kubernetes:'Orchestrates containers at scale — the standard for running production workloads reliably.',
+  terraform:'Defines infrastructure as code so environments are reproducible, versioned, and reviewable.',
+  networking:'Understanding how systems communicate — essential for cloud, security, and reliability work.',
+  aws:'The most widely adopted cloud platform — a strong baseline for almost any infrastructure role.',
+  azure:'A major enterprise cloud platform, especially common in .NET and large-org environments.',
+  python:'A flexible language used heavily in automation, data, and AI tooling.',
+  promptengineering:'Structuring inputs to reliably get useful output from language models.',
+  rag:'Retrieval-Augmented Generation — grounding AI responses in real, private data sources.',
+  aiagents:'Systems where AI plans and executes multi-step tasks using tools — the frontier of applied AI.',
+  git:'Version control — the foundation of collaborative software work.',
+  gcp:'Google Cloud — strong for data, ML, and Kubernetes-native workloads.',
+  cicd:'Automates build, test, and deploy pipelines.',
+  jenkins:'A widely-used automation server for building CI/CD pipelines.',
+  javascript:'The core language of the web — foundational for frontend and Node.js backends.',
+  typescript:'JavaScript with static types — improves reliability on larger codebases.',
+  react:'A leading UI library for building interactive frontends.',
+  java:'A robust, widely used language in enterprise backend systems.',
+  dotnet:'Microsoft\'s framework for building enterprise applications, common in Azure shops.',
+  genai:'Foundation model concepts that power modern AI applications.',
+};
+
+/* =========================================================
+   ENGINE
+========================================================= */
+function scorePath(path, userSkills){
+  const have = path.requiredSkills.filter(s => userSkills.includes(s));
+  const coreHave = path.coreSkills.filter(s => userSkills.includes(s));
+  const remaining = path.requiredSkills.filter(s => !userSkills.includes(s));
+  const matchPercent = Math.round(((coreHave.length/path.coreSkills.length)*0.7 + (have.length/path.requiredSkills.length)*0.3)*100);
+  return {
+    path, matchPercent: Math.min(97, Math.max(8, matchPercent)),
+    have, learnNext: remaining.slice(0,3), learnLater: remaining.slice(3),
+  };
+}
+function rankPaths(userSkills){
+  return CAREER_PATHS.map(p => scorePath(p, userSkills)).sort((a,b)=>b.matchPercent-a.matchPercent);
+}
+function readiness(profile){
+  const skillPts = Math.min(profile.skills.length*6, 48);
+  const expPts = Math.min(profile.experience*4, 32);
+  const goalPts = profile.goal ? 12 : 0;
+  return Math.min(96, 8 + skillPts + expPts + goalPts);
+}
+function strengthAreas(profile){
+  const counts = {};
+  profile.skills.forEach(id=>{ const s = skillById(id); if(s) counts[s.category]=(counts[s.category]||0)+1; });
+  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  return {
+    current: sorted[0] ? sorted[0][0] : 'Development',
+    emerging: sorted[1] ? sorted[1][0] : 'Cloud',
+    opportunity: sorted[sorted.length-1] ? sorted[sorted.length-1][0] : 'DevOps',
+  };
+}
+
+/* =========================================================
+   SMALL UI PRIMITIVES
+========================================================= */
+function ProgressRing({percent, size=180, label}){
+  const [animated, setAnimated] = useState(0);
+  useEffect(()=>{ const t = setTimeout(()=>setAnimated(percent), 150); return ()=>clearTimeout(t); },[percent]);
+  const r = size/2 - 14;
+  const c = 2*Math.PI*r;
+  const offset = c - (animated/100)*c;
+  return (
+    <div style={{position:'relative', width:size, height:size}}>
+      <svg width={size} height={size}>
+        <circle cx={size/2} cy={size/2} r={r} stroke="rgba(255,255,255,.08)" strokeWidth="10" fill="none"/>
+        <circle cx={size/2} cy={size/2} r={r} stroke="url(#ringGrad)" strokeWidth="10" fill="none"
+          strokeLinecap="round" strokeDasharray={c} strokeDashoffset={offset}
+          style={{transition:'stroke-dashoffset 1.4s cubic-bezier(.16,1,.3,1)', transform:'rotate(-90deg)', transformOrigin:'50% 50%'}}/>
+        <defs>
+          <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#4da3ff"/><stop offset="100%" stopColor="#8b7bff"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div style={{position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
+        <div className="ring-num">{animated}%</div>
+        {label && <div style={{fontSize:11, color:'#8b93a6', letterSpacing:'.08em', textTransform:'uppercase', marginTop:4}}>{label}</div>}
+      </div>
+    </div>
+  );
+}
+
+function useInView(){
+  const ref = useRef(null);
+  const [inView, setInView] = useState(false);
+  useEffect(()=>{
+    const el = ref.current; if(!el) return;
+    const obs = new IntersectionObserver(([entry])=>{ if(entry.isIntersecting) setInView(true); }, {threshold:.25});
+    obs.observe(el);
+    return ()=>obs.disconnect();
+  },[]);
+  return [ref, inView];
+}
+
+/* =========================================================
+   NAVBAR
+========================================================= */
+const NAV_ITEMS = [
+  {id:'identity', label:'Overview'},
+  {id:'universe', label:'Career Universe'},
+  {id:'skillGap', label:'Skill Gap'},
+  {id:'learnNext', label:'Learn Next'},
+  {id:'compare', label:'Compare Paths'},
+  {id:'roadmap', label:'90-Day Roadmap'},
+  {id:'whatIf', label:'What-If Simulator'},
+];
+function NavBar({screen, setScreen, onRestart}){
+  return (
+    <div className="navbar">
+      <div className="wrap" style={{display:'flex', alignItems:'center', gap:20}}>
+        <div style={{fontWeight:700, fontFamily:"'Space Grotesk',sans-serif", fontSize:15, flexShrink:0}}>
+          Career<span style={{color:'#4da3ff'}}>OS</span>
+        </div>
+        <div className="navlist">
+          {NAV_ITEMS.map(item=>(
+            <button key={item.id} className={"navbtn " + (screen===item.id ? 'active':'')} onClick={()=>setScreen(item.id)}>
+              {item.label}
+            </button>
+          ))}
+        </div>
+        <button className="navbtn" style={{marginLeft:'auto', flexShrink:0}} onClick={onRestart}>Restart</button>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   SCREEN: HERO
+========================================================= */
+const HERO_NODES = [
+  {id:'developer', label:'Software Developer', x:18, y:22},
+  {id:'tester', label:'Test Engineer', x:78, y:16},
+  {id:'cloud', label:'Cloud Engineer', x:12, y:58},
+  {id:'devops', label:'DevOps Engineer', x:82, y:52},
+  {id:'sre', label:'SRE', x:30, y:82},
+  {id:'platform', label:'Platform Engineer', x:66, y:86},
+  {id:'ai', label:'AI Engineer', x:50, y:8},
+  {id:'sysadmin', label:'System Administrator', x:6, y:38},
+  {id:'network', label:'Network Engineer', x:92, y:32},
+  {id:'appsupport', label:'Application Support', x:48, y:94},
+];
+const HERO_LINKS = [
+  ['developer','devops'],['developer','cloud'],['developer','ai'],['devops','platform'],
+  ['devops','sre'],['cloud','devops'],['cloud','network'],['sysadmin','network'],
+  ['tester','devops'],['sre','platform'],['appsupport','sysadmin'],['ai','developer'],
+];
+function Hero({onStart}){
+  const [hovered, setHovered] = useState(null);
+  const nodeMap = Object.fromEntries(HERO_NODES.map(n=>[n.id,n]));
+  return (
+    <section className="hero">
+      <div className="grid-overlay"></div>
+      <svg className="node-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+        {HERO_LINKS.map(([a,b],i)=>{
+          const A = nodeMap[a], B = nodeMap[b];
+          const hot = hovered===a || hovered===b;
+          return <line key={i} className={"node-line " + (hot?'hot':'')} x1={A.x} y1={A.y} x2={B.x} y2={B.y}/>;
+        })}
+      </svg>
+      {HERO_NODES.map((n,i)=>(
+        <div key={n.id} className={"node float " + (hovered===n.id ? 'active':'')}
+          style={{left:n.x+'%', top:n.y+'%', animationDelay:(i*0.3)+'s'}}
+          onMouseEnter={()=>setHovered(n.id)} onMouseLeave={()=>setHovered(null)}>
+          {n.label}
+        </div>
+      ))}
+      <div className="fade-up" style={{position:'relative', zIndex:2}}>
+        <div style={{fontSize:12, letterSpacing:'.2em', color:'#7fd0ff', marginBottom:18, textTransform:'uppercase'}}>Career Intelligence, Reimagined</div>
+        <h1 className="text-gradient">YOUR CAREER ISN'T<br/>A STRAIGHT LINE.</h1>
+        <p className="sub">Explore where your IT experience can take you next.</p>
+        <button className="btn-primary" onClick={onStart}>Build My CareerOS →</button>
+      </div>
+    </section>
+  );
+}
+
+/* =========================================================
+   SCREEN: ONBOARDING
+========================================================= */
+function Onboarding({profile, setProfile, onComplete}){
+  const [step, setStep] = useState(1);
+  const steps = [
+    {n:'01', label:'ROLE'}, {n:'02', label:'EXPERIENCE'}, {n:'03', label:'SKILLS'}, {n:'04', label:'GOAL'},
+  ];
+  const canNext = step===1 ? !!profile.role : step===2 ? true : step===3 ? profile.skills.length>0 : !!profile.goal;
+
+  return (
+    <section className="wrap fade-in" style={{minHeight:'100vh', paddingTop:90, paddingBottom:90}}>
+      <div className="progress-steps">
+        {steps.map((s,i)=>(
+          <div key={s.n} className={"progress-step " + (step===i+1?'active':step>i+1?'done':'')}>{s.n} — {s.label}</div>
+        ))}
+      </div>
+
+      {step===1 && (
+        <div className="fade-up" key="s1">
+          <h2 style={{textAlign:'center', fontSize:30, marginBottom:36}}>What do you do today?</h2>
+          <div className="option-grid">
+            {ROLES.map(r=>(
+              <button key={r.id} className={"option-card glass " + (profile.role===r.id?'selected':'')}
+                onClick={()=>setProfile({...profile, role:r.id, roleLabel:r.label})}>{r.label}</button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {step===2 && (
+        <div className="fade-up" key="s2">
+          <h2 style={{textAlign:'center', fontSize:30, marginBottom:10}}>How long have you been in IT?</h2>
+          <div style={{textAlign:'center', fontSize:56, fontWeight:700, fontFamily:"'Space Grotesk',sans-serif", color:'#7fd0ff', margin:'20px 0'}}>
+            {profile.experience}{profile.experience>=15?'+':''} <span style={{fontSize:18, color:'#8b93a6'}}>years</span>
+          </div>
+          <div className="exp-track">
+            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', position:'relative'}}>
+              <div style={{position:'absolute', left:0, right:0, top:'50%', height:2, background:'rgba(255,255,255,.1)'}}></div>
+              {EXP_STEPS.map((v,i)=>(
+                <div key={v} onClick={()=>setProfile({...profile, experience:v})}
+                  className={"exp-dot " + (profile.experience===v?'active':profile.experience>v?'passed':'')}
+                  style={{position:'relative', zIndex:1}} title={v+' years'}/>
+              ))}
+            </div>
+            <div style={{display:'flex', justifyContent:'space-between', marginTop:12, fontSize:11, color:'#5b6478'}}>
+              {EXP_STEPS.map(v=><span key={v}>{v}{v===15?'+':''}</span>)}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {step===3 && (
+        <div className="fade-up" key="s3">
+          <h2 style={{textAlign:'center', fontSize:30, marginBottom:8}}>What do you already know?</h2>
+          <p style={{textAlign:'center', color:'#8b93a6', marginBottom:20}}>Select all that apply. Tap again to remove.</p>
+          {profile.skills.length>0 && (
+            <div className="glass" style={{borderRadius:16, padding:'14px 18px', maxWidth:820, margin:'0 auto 24px'}}>
+              <div className="skill-category-label" style={{margin:0}}>My Skills ({profile.skills.length})</div>
+              <div>{profile.skills.map(id=>{
+                const s = skillById(id);
+                return <span key={id} className="chip selected" onClick={()=>toggleSkill(id)}>{s.name} ✕</span>;
+              })}</div>
+            </div>
+          )}
+          <div style={{maxWidth:820, margin:'0 auto'}}>
+            {SKILL_GROUPS.map(group=>(
+              <div key={group.label}>
+                <div className="skill-category-label">{group.label}</div>
+                <div>{group.skills.map(s=>(
+                  <span key={s.id} className={"chip " + (profile.skills.includes(s.id)?'selected':'')} onClick={()=>toggleSkill(s.id)}>
+                    {s.name}
+                  </span>
+                ))}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {step===4 && (
+        <div className="fade-up" key="s4">
+          <h2 style={{textAlign:'center', fontSize:30, marginBottom:36}}>What do you want next?</h2>
+          <div className="option-grid">
+            {GOALS.map(g=>(
+              <button key={g.id} className={"option-card glass " + (profile.goal===g.id?'selected':'')}
+                onClick={()=>setProfile({...profile, goal:g.id, goalLabel:g.label})}>{g.label}</button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div style={{display:'flex', justifyContent:'center', gap:14, marginTop:48}}>
+        {step>1 && <button className="btn-ghost" onClick={()=>setStep(step-1)}>Back</button>}
+        {step<4 && <button className="btn-primary" disabled={!canNext} style={{opacity:canNext?1:.4}} onClick={()=>canNext && setStep(step+1)}>Continue →</button>}
+        {step===4 && <button className="btn-primary" disabled={!canNext} style={{opacity:canNext?1:.4}} onClick={()=>canNext && onComplete()}>Build My CareerOS</button>}
+      </div>
+    </section>
+  );
+
+  function toggleSkill(id){
+    const has = profile.skills.includes(id);
+    setProfile({...profile, skills: has ? profile.skills.filter(s=>s!==id) : [...profile.skills, id]});
+  }
+}
+
+/* =========================================================
+   SCREEN: BUILDING SEQUENCE
+========================================================= */
+function BuildingSequence({onDone}){
+  const lines = ['ANALYZING EXPERIENCE...','MAPPING CURRENT SKILLS...','IDENTIFYING CAREER PATHS...','CALCULATING SKILL GAPS...','BUILDING YOUR CAREEROS...'];
+  const [idx, setIdx] = useState(0);
+  useEffect(()=>{
+    if(idx>=lines.length){ const t=setTimeout(onDone, 500); return ()=>clearTimeout(t); }
+    const t = setTimeout(()=>setIdx(idx+1), 650);
+    return ()=>clearTimeout(t);
+  },[idx]);
+  return (
+    <section style={{minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', position:'relative'}}>
+      <div className="grid-overlay"></div>
+      <div style={{position:'relative', width:120, height:120, marginBottom:44}}>
+        <svg width="120" height="120" style={{animation:'spin 3s linear infinite'}}>
+          <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(77,163,255,.15)" strokeWidth="2"/>
+          <circle cx="60" cy="60" r="50" fill="none" stroke="#4da3ff" strokeWidth="2" strokeDasharray="80 240" strokeLinecap="round"/>
+        </svg>
+      </div>
+      <div style={{textAlign:'center'}}>
+        {lines.map((l,i)=>(
+          <div key={l} style={{
+            fontSize:14, letterSpacing:'.12em', margin:'8px 0',
+            color: i<idx ? '#4da3ff' : i===idx ? '#fff' : '#3a4256',
+            opacity: i<=idx ? 1 : 0.3, transition:'all .4s ease'
+          }}>{l}</div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* =========================================================
+   SCREEN: CAREER IDENTITY
+========================================================= */
+function CareerIdentity({profile}){
+  const score = readiness(profile);
+  const strengths = strengthAreas(profile);
+  return (
+    <section className="wrap fade-up" style={{paddingTop:70, paddingBottom:90}}>
+      <div style={{textAlign:'center', marginBottom:50}}>
+        <div style={{fontSize:12, letterSpacing:'.2em', color:'#7fd0ff', marginBottom:14, textTransform:'uppercase'}}>Your Career Identity</div>
+        <h2 style={{fontSize:38, margin:'0 0 6px'}}>{profile.roleLabel.toUpperCase()}</h2>
+        <p style={{color:'#8b93a6'}}>{profile.experience}{profile.experience>=15?'+':''} Years Experience · Goal: {profile.goalLabel}</p>
+      </div>
+
+      <div style={{display:'flex', flexWrap:'wrap', gap:36, alignItems:'center', justifyContent:'center', marginBottom:56}}>
+        <ProgressRing percent={score} label="Career Readiness"/>
+        <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(160px,1fr))', gap:16, maxWidth:520}}>
+          <div className="glass card">
+            <div className="skill-category-label" style={{margin:'0 0 6px'}}>Current Strength</div>
+            <div style={{fontSize:19, fontWeight:700, color:'#7fd0ff'}}>{strengths.current}</div>
+          </div>
+          <div className="glass card">
+            <div className="skill-category-label" style={{margin:'0 0 6px'}}>Emerging Strength</div>
+            <div style={{fontSize:19, fontWeight:700, color:'#b6acff'}}>{strengths.emerging}</div>
+          </div>
+          <div className="glass card">
+            <div className="skill-category-label" style={{margin:'0 0 6px'}}>Opportunity Area</div>
+            <div style={{fontSize:19, fontWeight:700}}>{strengths.opportunity}</div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{textAlign:'center'}}>
+        <div className="skill-category-label">Your Skills</div>
+        <div style={{marginTop:10}}>
+          {profile.skills.map(id=>{ const s=skillById(id); return <span key={id} className="chip selected">{s.name}</span>; })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* =========================================================
+   SCREEN: CAREER UNIVERSE
+========================================================= */
+function CareerUniverse({profile, effectiveSkills, selectedPathId, setSelectedPathId}){
+  const ranked = useMemo(()=>rankPaths(effectiveSkills), [effectiveSkills]);
+  const containerRef = useRef(null);
+  const [mouse, setMouse] = useState({x:0.5,y:0.5});
+  const [hoveredId, setHoveredId] = useState(null);
+
+  const positions = ranked.map((p,i)=>{
+    const angle = (i/ranked.length)*2*Math.PI - Math.PI/2;
+    const radius = 38;
+    return {id:p.path.id, x:50+radius*Math.cos(angle), y:50+radius*Math.sin(angle)};
+  });
+  const posMap = Object.fromEntries(positions.map(p=>[p.id,p]));
+
+  function handleMouseMove(e){
+    const rect = containerRef.current.getBoundingClientRect();
+    setMouse({x:(e.clientX-rect.left)/rect.width, y:(e.clientY-rect.top)/rect.height});
+  }
+
+  const selected = ranked.find(p=>p.path.id===selectedPathId);
+
+  return (
+    <section className="wrap fade-up" style={{paddingTop:70, paddingBottom:100}}>
+      <div style={{textAlign:'center', marginBottom:10}}>
+        <div style={{fontSize:12, letterSpacing:'.2em', color:'#7fd0ff', textTransform:'uppercase', marginBottom:10}}>Career Universe</div>
+        <h2 style={{fontSize:32, margin:0}}>Explore paths from where you stand</h2>
+        <p style={{color:'#8b93a6', marginTop:8}}>Click any node to reveal how well it fits your profile.</p>
+      </div>
+
+      <div className="universe-wrap" ref={containerRef} onMouseMove={handleMouseMove} onMouseLeave={()=>setMouse({x:.5,y:.5})}>
+        <svg viewBox="0 0 100 100" style={{position:'absolute', inset:0, width:'100%', height:'100%'}}>
+          {positions.map(p=>{
+            const score = ranked.find(r=>r.path.id===p.id).matchPercent;
+            const hot = hoveredId===p.id || selectedPathId===p.id;
+            return (
+              <line key={p.id} x1="50" y1="50" x2={p.x} y2={p.y}
+                stroke={hot ? '#7fd0ff' : '#4da3ff'} strokeWidth={hot? 0.6 : 0.3}
+                opacity={hot ? 0.9 : 0.2 + (score/100)*0.3}
+                style={{transition:'all .3s ease'}}/>
+            );
+          })}
+        </svg>
+
+        <div className="uni-center pulse" style={{transform:`translate(calc(-50% + ${(mouse.x-0.5)*-8}px), calc(-50% + ${(mouse.y-0.5)*-8}px))`}}>
+          <div style={{fontSize:11, color:'#7fd0ff', letterSpacing:'.1em', marginBottom:4}}>YOU ARE HERE</div>
+          <div style={{fontWeight:700, fontSize:16}}>{profile.roleLabel.toUpperCase()}</div>
+        </div>
+
+        {positions.map(p=>{
+          const info = ranked.find(r=>r.path.id===p.id);
+          const isSelected = selectedPathId===p.id;
+          const dim = selectedPathId && !isSelected;
+          const parX = (mouse.x-0.5)* (isSelected? 0 : 10);
+          const parY = (mouse.y-0.5)* (isSelected? 0 : 10);
+          return (
+            <div key={p.id}
+              className={"uni-node " + (isSelected?'selected':'') + (dim?' dim':'')}
+              style={{left:p.x+'%', top:p.y+'%', transform:`translate(calc(-50% + ${parX}px), calc(-50% + ${parY}px))`}}
+              onMouseEnter={()=>setHoveredId(p.id)} onMouseLeave={()=>setHoveredId(null)}
+              onClick={()=>setSelectedPathId(isSelected? null : p.id)}
+              tabIndex={0} role="button"
+              onKeyDown={e=>{ if(e.key==='Enter') setSelectedPathId(isSelected?null:p.id); }}>
+              <div>{info.path.name}</div>
+              <div style={{fontSize:11, color:'#7fd0ff', marginTop:3}}>{info.matchPercent}% match</div>
+            </div>
+          );
+        })}
+      </div>
+
+      {selected && (
+        <div className="glass card fade-up" style={{maxWidth:760, margin:'40px auto 0'}}>
+          <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start', flexWrap:'wrap', gap:12}}>
+            <div>
+              <h3 style={{margin:'0 0 6px', fontSize:24}}>{selected.path.name.toUpperCase()}</h3>
+              <p style={{color:'#8b93a6', margin:0}}>{selected.path.blurb}</p>
+            </div>
+            <span className={"badge " + (selected.matchPercent>=60?'badge-strong':'badge-good')}>
+              {selected.matchPercent>=75?'Strong Match':selected.matchPercent>=45?'Good Match':'Growth Path'}
+            </span>
+          </div>
+
+          <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))', gap:22, marginTop:26}}>
+            <div>
+              <div className="skill-category-label">Why This Fits</div>
+              {selected.have.length>0 ? selected.have.map(id=>(
+                <div key={id} style={{fontSize:13.5, color:'#c7d0de', margin:'6px 0'}}>✓ {skillById(id).name}</div>
+              )) : <div style={{fontSize:13.5, color:'#5b6478'}}>Fresh territory — no overlap yet.</div>}
+            </div>
+            <div>
+              <div className="skill-category-label">Skills To Build Next</div>
+              {selected.learnNext.map(id=>(
+                <div key={id} style={{fontSize:13.5, color:'#c7d0de', margin:'6px 0'}}>○ {skillById(id).name}</div>
+              ))}
+            </div>
+            <div>
+              <div className="skill-category-label">Skills To Build Later</div>
+              {selected.learnLater.length>0 ? selected.learnLater.map(id=>(
+                <div key={id} style={{fontSize:13.5, color:'#5b6478'}}>○ {skillById(id).name}</div>
+              )) : <div style={{fontSize:13.5, color:'#5b6478'}}>—</div>}
+            </div>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
+/* =========================================================
+   SCREEN: LEARN NEXT
+========================================================= */
+function LearnNext({profile, effectiveSkills, selectedPathId, setSelectedPathId}){
+  const ranked = useMemo(()=>rankPaths(effectiveSkills), [effectiveSkills]);
+  const target = ranked.find(r=>r.path.id===selectedPathId) || ranked[0];
+  const [openId, setOpenId] = useState(null);
+
+  return (
+    <section className="wrap fade-up" style={{paddingTop:70, paddingBottom:100, maxWidth:680}}>
+      <div style={{textAlign:'center', marginBottom:34}}>
+        <h2 style={{fontSize:32, margin:'0 0 10px'}}>WHAT SHOULD I LEARN NEXT?</h2>
+        <p style={{color:'#8b93a6'}}>Let's build the bridge between where you are and where you want to go.</p>
+      </div>
+
+      <div style={{display:'flex', justifyContent:'center', gap:40, marginBottom:10}}>
+        <div style={{textAlign:'center'}}>
+          <div className="skill-category-label">Current</div>
+          <div style={{fontWeight:700, fontSize:16}}>{profile.roleLabel}</div>
+        </div>
+        <div style={{textAlign:'center'}}>
+          <div className="skill-category-label">Target</div>
+          <select value={target.path.id} onChange={e=>setSelectedPathId(e.target.value)}
+            style={{background:'rgba(255,255,255,.04)', color:'#fff', border:'1px solid var(--border)', borderRadius:8, padding:'6px 10px', fontWeight:700, fontSize:14}}>
+            {ranked.map(r=><option key={r.path.id} value={r.path.id} style={{background:'#0a0e17'}}>{r.path.name}</option>)}
+          </select>
+        </div>
+      </div>
+
+      <div style={{marginTop:36}}>
+        <div className="bridge-node known" style={{background:'rgba(255,255,255,.03)'}}>
+          <div className="bridge-dot">●</div><div><strong>YOU</strong></div>
+        </div>
+        <div className="bridge-line"></div>
+        {target.path.requiredSkills.map((id,i)=>{
+          const known = effectiveSkills.includes(id);
+          const s = skillById(id);
+          return (
+            <React.Fragment key={id}>
+              <div className={"bridge-node glass " + (known?'known':'next')} style={{animationDelay:(i*0.12)+'s'}}
+                onClick={()=>setOpenId(openId===id?null:id)} tabIndex={0} role="button"
+                onKeyDown={e=>{ if(e.key==='Enter') setOpenId(openId===id?null:id); }}>
+                <div className="bridge-dot">{known?'✓':i+1}</div>
+                <div style={{flex:1}}>
+                  <div style={{fontWeight:600}}>{s.name}</div>
+                  {openId===id && <div style={{fontSize:13, color:'#8b93a6', marginTop:6}}>{EXPLAIN[id] || 'A core skill for this path.'}</div>}
+                </div>
+                <div style={{fontSize:11, color: known ? '#7fd0ff' : '#8b93a6'}}>{known?'COMPLETE':'CLICK FOR INFO'}</div>
+              </div>
+              {i < target.path.requiredSkills.length-1 && <div className="bridge-line"></div>}
+            </React.Fragment>
+          );
+        })}
+        <div className="bridge-line"></div>
+        <div className="bridge-node" style={{background:'rgba(77,163,255,.1)', border:'1px solid rgba(77,163,255,.35)'}}>
+          <div className="bridge-dot" style={{borderColor:'#4da3ff', color:'#7fd0ff'}}>★</div>
+          <div><strong>{target.path.name.toUpperCase()}</strong></div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* =========================================================
+   SCREEN: SKILL GAP VISUALIZER
+========================================================= */
+function SkillGapVisualizer({effectiveSkills, selectedPathId}){
+  const ranked = useMemo(()=>rankPaths(effectiveSkills), [effectiveSkills]);
+  const target = ranked.find(r=>r.path.id===selectedPathId) || ranked[0];
+  const [openCat, setOpenCat] = useState(SKILL_GROUPS[0].label);
+
+  function status(id){
+    if(effectiveSkills.includes(id)) return 'complete';
+    if(target.learnNext.includes(id)) return 'recommended';
+    return 'later';
+  }
+
+  return (
+    <section className="wrap fade-up" style={{paddingTop:70, paddingBottom:100}}>
+      <div style={{textAlign:'center', marginBottom:40}}>
+        <h2 style={{fontSize:32, margin:'0 0 10px'}}>SKILL GAP VISUALIZER</h2>
+        <p style={{color:'#8b93a6'}}>An orbital map of what you know, what's next, and what comes later.</p>
+        <div style={{display:'flex', gap:18, justifyContent:'center', marginTop:16, fontSize:12, color:'#8b93a6'}}>
+          <span>● <span style={{color:'#7fd0ff'}}>Complete</span></span>
+          <span>● <span style={{color:'#b6acff'}}>Recommended</span></span>
+          <span>● <span style={{color:'#5b6478'}}>Later</span></span>
+        </div>
+      </div>
+
+      <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))', gap:20}}>
+        {SKILL_GROUPS.map(group=>{
+          const open = openCat===group.label;
+          const completeCount = group.skills.filter(s=>effectiveSkills.includes(s.id)).length;
+          return (
+            <div key={group.label} className="glass card" style={{cursor:'pointer'}} onClick={()=>setOpenCat(open?null:group.label)}>
+              <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+                <h3 style={{margin:0, fontSize:17}}>{group.label.toUpperCase()}</h3>
+                <span style={{fontSize:12, color:'#7fd0ff'}}>{completeCount}/{group.skills.length}</span>
+              </div>
+              {open && (
+                <div style={{marginTop:16, display:'flex', flexWrap:'wrap', gap:14, justifyContent:'center'}}>
+                  {group.skills.map(s=>{
+                    const st = status(s.id);
+                    const color = st==='complete' ? '#7fd0ff' : st==='recommended' ? '#b6acff' : '#5b6478';
+                    return (
+                      <div key={s.id} style={{textAlign:'center', width:74}}>
+                        <div style={{
+                          width:52, height:52, borderRadius:'50%', margin:'0 auto 6px', display:'flex', alignItems:'center', justifyContent:'center',
+                          border:`2px solid ${color}`, color, fontWeight:700, fontSize:13,
+                          boxShadow: st==='complete' ? `0 0 16px ${color}55` : 'none', transition:'all .3s ease'
+                        }}>{st==='complete' ? '✓' : '○'}</div>
+                        <div style={{fontSize:11.5, color:'#c7d0de'}}>{s.name}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+/* =========================================================
+   SCREEN: COMPARE PATHS
+========================================================= */
+function ComparePaths({effectiveSkills}){
+  const ranked = useMemo(()=>rankPaths(effectiveSkills), [effectiveSkills]);
+  const [chosen, setChosen] = useState(ranked.slice(0,2).map(r=>r.path.id));
+
+  function toggle(id){
+    if(chosen.includes(id)) setChosen(chosen.filter(c=>c!==id));
+    else if(chosen.length<3) setChosen([...chosen, id]);
+  }
+  const rows = [
+    {label:'Current Skill Alignment', get:r=>r.matchPercent+'%'},
+    {label:'Learning Gap', get:r=>(r.learnNext.length+r.learnLater.length)+' skills'},
+    {label:'Transition Complexity', get:r=>r.matchPercent>=65?'Low':r.matchPercent>=40?'Moderate':'High'},
+    {label:'Relevant Existing Skills', get:r=>r.have.length ? r.have.map(id=>skillById(id).name).join(', ') : '—'},
+    {label:'Recommended Next Skill', get:r=>r.learnNext[0] ? skillById(r.learnNext[0]).name : '—'},
+    {label:'Suggested First Project', get:r=>r.path.firstProject},
+  ];
+  const chosenScores = chosen.map(id=>ranked.find(r=>r.path.id===id));
+
+  return (
+    <section className="wrap fade-up" style={{paddingTop:70, paddingBottom:100}}>
+      <div style={{textAlign:'center', marginBottom:30}}>
+        <h2 style={{fontSize:32, margin:'0 0 10px'}}>COMPARE CAREER PATHS</h2>
+        <p style={{color:'#8b93a6'}}>Select up to three paths to compare side by side.</p>
+      </div>
+      <div style={{display:'flex', flexWrap:'wrap', gap:10, justifyContent:'center', marginBottom:36}}>
+        {ranked.map(r=>(
+          <span key={r.path.id} className={"chip " + (chosen.includes(r.path.id)?'selected':'')} onClick={()=>toggle(r.path.id)}>
+            {r.path.name}
+          </span>
+        ))}
+      </div>
+
+      <div style={{overflowX:'auto'}}>
+        <div style={{display:'grid', gridTemplateColumns:`200px repeat(${chosenScores.length}, minmax(200px,1fr))`, minWidth:200+chosenScores.length*220, gap:1, background:'rgba(255,255,255,.06)', borderRadius:16, overflow:'hidden'}}>
+          <div style={{background:'#0a0e17', padding:16}}></div>
+          {chosenScores.map(r=>(
+            <div key={r.path.id} style={{background:'#0e1420', padding:16, textAlign:'center', fontWeight:700}}>{r.path.name}</div>
+          ))}
+          {rows.map(row=>(
+            <React.Fragment key={row.label}>
+              <div style={{background:'#0a0e17', padding:16, fontSize:12.5, color:'#8b93a6', letterSpacing:'.04em'}}>{row.label}</div>
+              {chosenScores.map(r=>(
+                <div key={r.path.id+row.label} style={{background:'#0e1420', padding:16, fontSize:13.5, textAlign:'center'}}>{row.get(r)}</div>
+              ))}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+      <p style={{fontSize:12, color:'#5b6478', textAlign:'center', marginTop:20}}>
+        Estimates reflect skill alignment only — not guaranteed salary or employment outcomes.
+      </p>
+    </section>
+  );
+}
+
+/* =========================================================
+   SCREEN: 90-DAY ROADMAP
+========================================================= */
+function RoadmapPhase({phase}){
+  const [ref, inView] = useInView();
+  return (
+    <div ref={ref} className={"roadmap-phase " + (inView?'in-view':'')}>
+      <div className="roadmap-dot"></div>
+      <div className="skill-category-label" style={{margin:'0 0 6px'}}>{phase.days}</div>
+      <h3 style={{margin:'0 0 8px', fontSize:19}}>{phase.title}</h3>
+      <p style={{color:'#8b93a6', fontSize:14, margin:'0 0 10px'}}>{phase.milestone}</p>
+      <div>{phase.skills.map(s=><span key={s} className="chip">{s}</span>)}</div>
+    </div>
+  );
+}
+function Roadmap90({effectiveSkills, selectedPathId}){
+  const ranked = useMemo(()=>rankPaths(effectiveSkills), [effectiveSkills]);
+  const target = ranked.find(r=>r.path.id===selectedPathId) || ranked[0];
+  const gap = [...target.learnNext, ...target.learnLater];
+  const chunk = (arr, size) => Array.from({length: Math.ceil(arr.length/size)}, (_,i)=>arr.slice(i*size, i*size+size));
+  const groups = chunk(gap.length? gap : ['linux','docker','cicd'], 2);
+  const dayLabels = ['DAY 1–30','DAY 31–60','DAY 61–90'];
+  const milestones = [
+    'Build stronger foundational fluency in these areas.',
+    'Apply these skills to build and automate something real.',
+    'Create a portfolio-ready project that proves this path.',
+  ];
+  const phases = groups.slice(0,3).map((g,i)=>({
+    days: dayLabels[i] || `DAY ${i*30+1}–${i*30+30}`,
+    title: g.map(id=>skillById(id)?.name || id).join(' + '),
+    milestone: milestones[i] || 'Deepen expertise and apply it to a real project.',
+    skills: g.map(id=>skillById(id)?.name || id),
+  }));
+
+  return (
+    <section className="wrap fade-up" style={{paddingTop:70, paddingBottom:100}}>
+      <div style={{textAlign:'center', marginBottom:20}}>
+        <div className="skill-category-label">YOU ARE HERE</div>
+        <h2 style={{fontSize:32, margin:'8px 0 10px'}}>YOUR 90-DAY ROADMAP</h2>
+        <p style={{color:'#8b93a6'}}>Toward {target.path.name} — scroll to progress through the plan.</p>
+      </div>
+      <div className="roadmap-rail" style={{marginTop:50}}>
+        {phases.map((p,i)=><RoadmapPhase key={i} phase={p}/>)}
+        <div className="roadmap-phase in-view" style={{opacity:1, transform:'none'}}>
+          <div className="roadmap-dot" style={{background:'#4da3ff', borderColor:'#7fd0ff'}}></div>
+          <div className="skill-category-label">NEXT MILESTONE</div>
+          <h3 style={{margin:'6px 0', fontSize:19}}>Stronger foundation for {target.path.name} opportunities</h3>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* =========================================================
+   SCREEN: WHAT-IF SIMULATOR
+========================================================= */
+const WHATIF_SKILLS = ['aws','docker','kubernetes','python','terraform','genai','rag','aiagents'];
+function WhatIfSimulator({profile, whatIfSkills, toggleWhatIf, effectiveSkills}){
+  const baseRanked = useMemo(()=>rankPaths(profile.skills), [profile.skills]);
+  const newRanked = useMemo(()=>rankPaths(effectiveSkills), [effectiveSkills]);
+  const baseMap = Object.fromEntries(baseRanked.map(r=>[r.path.id, r.matchPercent]));
+
+  return (
+    <section className="wrap fade-up" style={{paddingTop:70, paddingBottom:100}}>
+      <div style={{textAlign:'center', marginBottom:30}}>
+        <h2 style={{fontSize:32, margin:'0 0 10px'}}>WHAT IF I LEARN...?</h2>
+        <p style={{color:'#8b93a6'}}>Toggle a skill to see how your career paths shift in real time.</p>
+      </div>
+      <div style={{display:'flex', flexWrap:'wrap', gap:10, justifyContent:'center', marginBottom:44}}>
+        {WHATIF_SKILLS.map(id=>{
+          const s = skillById(id);
+          const already = profile.skills.includes(id);
+          return (
+            <span key={id} className={"chip " + (whatIfSkills.includes(id) || already ?'selected':'')}
+              style={already ? {opacity:.5, cursor:'default'} : {}}
+              onClick={()=>!already && toggleWhatIf(id)}>
+              {s.name}{already ? ' (known)' : ''}
+            </span>
+          );
+        })}
+      </div>
+
+      <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))', gap:18}}>
+        {newRanked.map(r=>{
+          const before = baseMap[r.path.id];
+          const delta = r.matchPercent - before;
+          return (
+            <div key={r.path.id} className="glass card">
+              <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+                <h3 style={{margin:0, fontSize:16}}>{r.path.name}</h3>
+                {delta>0 && <span style={{fontSize:12, color:'#7fd0ff'}}>+{delta}%</span>}
+              </div>
+              <div style={{height:8, background:'rgba(255,255,255,.08)', borderRadius:4, marginTop:14, overflow:'hidden'}}>
+                <div style={{height:'100%', width:r.matchPercent+'%', background:'linear-gradient(90deg,#4da3ff,#8b7bff)', transition:'width .6s cubic-bezier(.16,1,.3,1)'}}></div>
+              </div>
+              <div style={{fontSize:12, color:'#8b93a6', marginTop:8}}>{before}% → <strong style={{color:'#fff'}}>{r.matchPercent}%</strong> match</div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+/* =========================================================
+   AI CAREER COACH
+========================================================= */
+function generateCoachResponse(question, profile, effectiveSkills){
+  const q = question.toLowerCase();
+  const ranked = rankPaths(effectiveSkills);
+  let targetId = ranked[0].path.id;
+  if(q.includes('ai') || q.includes('gen ai') || q.includes('llm')) targetId='aieng';
+  else if(q.includes('cloud')) targetId='cloudeng';
+  else if(q.includes('devops')) targetId='devops';
+  else if(q.includes('platform')) targetId='platform';
+  else if(q.includes('sre') || q.includes('reliab')) targetId='sre';
+  else if(q.includes('architect')) targetId='solarch';
+
+  const result = ranked.find(r=>r.path.id===targetId) || ranked[0];
+  return {
+    recommendation: `Focus on ${result.path.name} next.`,
+    why: [
+      `Your current skills give you a ${result.matchPercent}% alignment with this path.`,
+      `Your experience level (${profile.experience} yrs) supports a realistic transition.`,
+      profile.goalLabel ? `This aligns with your stated goal: "${profile.goalLabel}".` : `This is a strong adjacent step from ${profile.roleLabel}.`,
+    ],
+    have: result.have.length ? result.have.map(id=>skillById(id).name) : ['Foundational experience from your current role'],
+    learnNext: result.learnNext.map(id=>skillById(id).name),
+    firstAction: result.learnNext.length ? `Start with ${skillById(result.learnNext[0]).name}: ${EXPLAIN[result.learnNext[0]] || 'a key building block for this path.'}` : `Start building a project using ${result.path.firstProject}`,
+    pathId: result.path.id,
+  };
+}
+
+function AICoach({profile, effectiveSkills, setSelectedPathId, setScreen}){
+  const [open, setOpen] = useState(false);
+  const [input, setInput] = useState('');
+  const [response, setResponse] = useState(null);
+  const suggestions = [
+    "I'm a React developer with 3 years of experience. Should I explore Cloud or AI next?",
+    "How do I move into DevOps?",
+    "What should I learn to become an SRE?",
+  ];
+
+  function ask(q){
+    const text = q || input;
+    if(!text.trim()) return;
+    const res = generateCoachResponse(text, profile, effectiveSkills);
+    setResponse(res);
+    setSelectedPathId(res.pathId);
+    setInput('');
+  }
+
+  return (
+    <React.Fragment>
+      <button className="coach-fab" onClick={()=>setOpen(!open)} aria-expanded={open}>
+        {open ? '✕ Close' : 'Ask CareerOS ✨'}
+      </button>
+      {open && (
+        <div className="coach-panel fade-up" role="dialog" aria-label="AI Career Coach">
+          <div style={{fontWeight:700, marginBottom:4}}>AI Career Coach</div>
+          <div style={{fontSize:12, color:'#8b93a6', marginBottom:14}}>Ask about your path forward. Demo responses are deterministic — swap in a real model API anytime.</div>
+
+          {!response && (
+            <div style={{marginBottom:14}}>
+              {suggestions.map(s=>(
+                <button key={s} className="btn-ghost" style={{display:'block', width:'100%', textAlign:'left', marginBottom:8, fontSize:12.5, textTransform:'none', letterSpacing:0}}
+                  onClick={()=>ask(s)}>{s}</button>
+              ))}
+            </div>
+          )}
+
+          {response && (
+            <div className="fade-in" style={{fontSize:13.5}}>
+              <div style={{color:'#7fd0ff', fontWeight:700, marginBottom:10}}>{response.recommendation}</div>
+              <div className="skill-category-label" style={{margin:'10px 0 4px'}}>Why</div>
+              {response.why.map((w,i)=><div key={i} style={{color:'#c7d0de', marginBottom:4}}>• {w}</div>)}
+              <div className="skill-category-label" style={{margin:'10px 0 4px'}}>What You Already Have</div>
+              {response.have.map((h,i)=><div key={i} style={{color:'#c7d0de', marginBottom:4}}>✓ {h}</div>)}
+              <div className="skill-category-label" style={{margin:'10px 0 4px'}}>What To Learn Next</div>
+              {response.learnNext.map((h,i)=><div key={i} style={{color:'#c7d0de', marginBottom:4}}>○ {h}</div>)}
+              <div className="skill-category-label" style={{margin:'10px 0 4px'}}>First Action</div>
+              <div style={{color:'#c7d0de', marginBottom:14}}>{response.firstAction}</div>
+              <button className="btn-ghost" style={{fontSize:11, marginRight:8}} onClick={()=>{ setScreen('universe'); }}>View In Universe</button>
+              <button className="btn-ghost" style={{fontSize:11}} onClick={()=>setResponse(null)}>Ask Another</button>
+            </div>
+          )}
+
+          <div style={{display:'flex', gap:8, marginTop:14}}>
+            <input value={input} onChange={e=>setInput(e.target.value)} placeholder="Type your question..."
+              onKeyDown={e=>{ if(e.key==='Enter') ask(); }}
+              style={{flex:1, background:'rgba(255,255,255,.05)', border:'1px solid var(--border)', borderRadius:10, padding:'10px 12px', color:'#fff', fontSize:13}}/>
+            <button className="btn-ghost" style={{padding:'10px 14px'}} onClick={()=>ask()}>Ask</button>
+          </div>
+        </div>
+      )}
+    </React.Fragment>
+  );
+}
+
+/* =========================================================
+   APP ROOT
+========================================================= */
+function App(){
+  const [screen, setScreen] = useState('hero'); // hero, onboarding, building, identity, universe, learnNext, skillGap, compare, roadmap, whatIf
+  const [profile, setProfile] = useState({role:null, roleLabel:'', experience:0, skills:[], goal:null, goalLabel:''});
+  const [selectedPathId, setSelectedPathId] = useState(null);
+  const [whatIfSkills, setWhatIfSkills] = useState([]);
+
+  const effectiveSkills = useMemo(()=>Array.from(new Set([...profile.skills, ...whatIfSkills])), [profile.skills, whatIfSkills]);
+
+  function toggleWhatIf(id){
+    setWhatIfSkills(prev => prev.includes(id) ? prev.filter(s=>s!==id) : [...prev, id]);
+  }
+  function restart(){
+    setProfile({role:null, roleLabel:'', experience:0, skills:[], goal:null, goalLabel:''});
+    setSelectedPathId(null); setWhatIfSkills([]); setScreen('hero');
+  }
+  function loadDemoProfile(){
+    setProfile({role:'developer', roleLabel:'Software Developer', experience:3, skills:['react','javascript','git','aws'], goal:'devops', goalLabel:'Move Into DevOps'});
+  }
+
+  useEffect(()=>{
+    if(screen!=='building') return;
+  },[screen]);
+
+  const inDashboard = ['identity','universe','learnNext','skillGap','compare','roadmap','whatIf'].includes(screen);
+
+  return (
+    <React.Fragment>
+      {inDashboard && <NavBar screen={screen} setScreen={setScreen} onRestart={restart}/>}
+
+      {screen==='hero' && (
+        <React.Fragment>
+          <div style={{position:'fixed', top:16, right:16, zIndex:40}}>
+            <button className="btn-ghost" style={{fontSize:11, padding:'8px 14px'}} onClick={loadDemoProfile}>Load Demo Profile</button>
+          </div>
+          <Hero onStart={()=>setScreen(profile.role ? 'building' : 'onboarding')}/>
+        </React.Fragment>
+      )}
+
+      {screen==='onboarding' && (
+        <Onboarding profile={profile} setProfile={setProfile} onComplete={()=>setScreen('building')}/>
+      )}
+
+      {screen==='building' && (
+        <BuildingSequence onDone={()=>setScreen('identity')}/>
+      )}
+
+      {screen==='identity' && <CareerIdentity profile={profile}/>}
+      {screen==='universe' && (
+        <CareerUniverse profile={profile} effectiveSkills={effectiveSkills} selectedPathId={selectedPathId} setSelectedPathId={setSelectedPathId}/>
+      )}
+      {screen==='learnNext' && (
+        <LearnNext profile={profile} effectiveSkills={effectiveSkills} selectedPathId={selectedPathId} setSelectedPathId={setSelectedPathId}/>
+      )}
+      {screen==='skillGap' && <SkillGapVisualizer effectiveSkills={effectiveSkills} selectedPathId={selectedPathId}/>}
+      {screen==='compare' && <ComparePaths effectiveSkills={effectiveSkills}/>}
+      {screen==='roadmap' && <Roadmap90 effectiveSkills={effectiveSkills} selectedPathId={selectedPathId}/>}
+      {screen==='whatIf' && (
+        <WhatIfSimulator profile={profile} whatIfSkills={whatIfSkills} toggleWhatIf={toggleWhatIf} effectiveSkills={effectiveSkills}/>
+      )}
+
+      {inDashboard && (
+        <AICoach profile={profile} effectiveSkills={effectiveSkills} setSelectedPathId={setSelectedPathId} setScreen={setScreen}/>
+      )}
+    </React.Fragment>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App/>);
+</script>
+</body>
+</html>
